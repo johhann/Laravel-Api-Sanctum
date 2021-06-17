@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Product;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::resource('products', ProductController::class);
 
+// public routes 
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::get('/products/search/{name}', [ProductController::class, 'search']);
+Route::POST('/register', [UserController::class, 'register']);
+Route::POST('/login', [UserController::class, 'login']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Protected routes 
+Route::group(['middleware' => ['auth:sanctum']],function () {
+    Route::POST('/products', [ProductController::class, 'store']);
+    Route::PUT('/products/{id}', [ProductController::class, 'update']);
+    Route::DELETE('/products/{id}', [ProductController::class, 'destroy']);
+    Route::GET('/logout', [UserController::class, 'logout']);
 });
